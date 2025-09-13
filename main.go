@@ -70,6 +70,6 @@ func main() {
 			time.Sleep(1 * time.Minute)
 		}
 	} else {
-		log.Infoln("No mode selected. Exiting.")
+		log.Infoln("No mode selected. Use '-clock' or '-text' arguments. Exiting.")
 	}
 }
