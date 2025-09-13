@@ -89,7 +89,7 @@ func (d *Display) ShowTime() error {
 
 	result := []uint16{}
 	for _, char := range timeStr {
-		fontData, err := fonts.GetCharacter(char, "5x8")
+		fontData, err := fonts.GetCharacter(char, "small")
 		if err != nil {
 			return err
 		}

@@ -19,7 +19,7 @@ func main() {
 	clock := flag.Bool("clock", false, "Run the clock")
 	text := flag.String("text", "", "Display some text")
 	textLoop := flag.Bool("text-loop", false, "Loop text continuously")
-	textSize := flag.String("text-size", "14x9", "Size of each character. Value must be one of 14x9 or 5x8")
+	textSize := flag.String("text-size", "large", "Size of each character. Value must be one of 'large' or 'small'")
 	scrollSpeed := flag.Int("text-scroll-speed", 5, "Text scroll speed. 1 is slow, 9 is fast")
 	debugLogging := flag.Bool("debug", false, "Enable debug logging")
 
@@ -30,8 +30,8 @@ func main() {
 
 	flag.Parse()
 
-	if *textSize != "14x9" && *textSize != "5x8" {
-		log.Fatalf("Invalid text-size value %s. Must be 14x9 or 5x8", *textSize)
+	if *textSize != "large" && *textSize != "small" {
+		log.Fatalf("Invalid text-size value %s. Must be 'large' or 'small'", *textSize)
 	}
 
 	if *scrollSpeed < 1 || *scrollSpeed > 9 {

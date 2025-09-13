@@ -24,7 +24,7 @@ A small application for displaying text or the time on an [Alfa-Zeta XY5 14*28 F
 - `-text` - Display some text
 - `-text-loop` - Loop text continuously
 - `-text-scroll-speed` - Text scroll speed. 1 is slow, 9 is fast (default 5)
-- `-text-size` - Size of each character. Value must be one of 14x9 or 5x8 (default "14x9")
+- `-text-size` - Size of each character. Value must be one of 'large' or 'small'
 
 ## Install
 
