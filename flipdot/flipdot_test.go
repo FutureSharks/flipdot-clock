@@ -289,8 +289,8 @@ func TestDisplayPrepareText(t *testing.T) {
 		}
 
 		// Should have data for 'H', gap, 'i', gap
-		// H is 5 columns, i is 5 columns, 2 gaps = 12 total
-		expectedMinLength := 12
+		// H is 5 columns, i is 3 columns, 2 gaps = 10 total
+		expectedMinLength := 10
 		if len(result) < expectedMinLength {
 			t.Errorf("expected at least %d columns, got %d", expectedMinLength, len(result))
 		}
