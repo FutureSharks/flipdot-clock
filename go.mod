@@ -1,4 +1,4 @@
-module flipdot-clock
+module github.com/FutureSharks/flipdot-clock
 
 go 1.23.0
 

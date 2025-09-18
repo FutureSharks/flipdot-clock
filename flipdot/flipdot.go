@@ -5,7 +5,7 @@ import (
 	"math"
 	"time"
 
-	fonts "flipdot-clock/flipdot/fonts"
+	fonts "github.com/FutureSharks/flipdot-clock/flipdot/fonts"
 
 	log "github.com/sirupsen/logrus"
 	"go.bug.st/serial"
@@ -89,7 +89,7 @@ func (d *Display) ShowTime() error {
 
 	result := []uint16{}
 	for _, char := range timeStr {
-		fontData, err := fonts.GetCharacter(char, "5x8")
+		fontData, err := fonts.GetCharacter(char, "small")
 		if err != nil {
 			return err
 		}

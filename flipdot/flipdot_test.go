@@ -248,7 +248,7 @@ func TestDisplayShowText(t *testing.T) {
 
 	t.Run("simple text no loop", func(t *testing.T) {
 		mock.ShowCalls = nil // Reset
-		err := display.ShowText("Hi", 1*time.Millisecond, false, "5x8")
+		err := display.ShowText("Hi", 1*time.Millisecond, false, "small")
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -267,7 +267,7 @@ func TestDisplayShowText(t *testing.T) {
 	})
 
 	t.Run("unsupported character", func(t *testing.T) {
-		err := display.ShowText("🚀", 1*time.Millisecond, false, "5x8")
+		err := display.ShowText("🚀", 1*time.Millisecond, false, "small")
 		if err == nil {
 			t.Fatal("expected error for unsupported character")
 		}
@@ -278,8 +278,8 @@ func TestDisplayShowText(t *testing.T) {
 func TestDisplayPrepareText(t *testing.T) {
 	display := &Display{output: &MockDisplayOutput{}}
 
-	t.Run("valid text 5x8", func(t *testing.T) {
-		result, err := display.prepareText("Hi", "5x8")
+	t.Run("valid text small", func(t *testing.T) {
+		result, err := display.prepareText("Hi", "small")
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -289,15 +289,15 @@ func TestDisplayPrepareText(t *testing.T) {
 		}
 
 		// Should have data for 'H', gap, 'i', gap
-		// H is 5 columns, i is 5 columns, 2 gaps = 12 total
-		expectedMinLength := 12
+		// H is 5 columns, i is 3 columns, 2 gaps = 10 total
+		expectedMinLength := 10
 		if len(result) < expectedMinLength {
 			t.Errorf("expected at least %d columns, got %d", expectedMinLength, len(result))
 		}
 	})
 
-	t.Run("valid text 14x9", func(t *testing.T) {
-		result, err := display.prepareText("A", "14x9")
+	t.Run("valid text large", func(t *testing.T) {
+		result, err := display.prepareText("A", "large")
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -306,7 +306,7 @@ func TestDisplayPrepareText(t *testing.T) {
 			t.Fatal("expected non-empty result")
 		}
 
-		// A in 14x9 font is 9 columns + 1 gap = 10 total
+		// A in large font is 9 columns + 1 gap = 10 total
 		expectedLength := 10
 		if len(result) != expectedLength {
 			t.Errorf("expected %d columns, got %d", expectedLength, len(result))
