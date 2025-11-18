@@ -25,6 +25,18 @@ A small application for displaying text or the time on an [Alfa-Zeta XY5 14*28 F
 - `-text-scroll-speed` - Text scroll speed. 1 is slow, 9 is fast (default 5)
 - `-text-size` - Size of each character. Value must be one of 'large' or 'small'
 
+## Enclosure
+
+![enclosure](img/enclosure-wireframe.png)
+
+CAD files for an enclose to make complete standalone display can be found in [cad](cad):
+
+- Mounting holes for:
+  - A Raspberry Pi Zero
+  - Alfa-Zeta XY5 14*28 Flip-Dot display
+  - 2x XL6019 based power supplies, for 5V and 24V each (from AliExpress)
+- Space for a USB-C PD decoy adapter so the whole thing can be powered via any USB-C charger (from AliExpress)
+
 ## Install
 
 To download a binary, check [the releases](https://github.com/FutureSharks/flipdot-clock/releases) or install manually:
@@ -34,6 +46,8 @@ go install github.com/FutureSharks/flipdot-clock@latest
 cd $GOPATH/pkg/mod/github.com/FutureSharks/flipdot-clock*/
 go run main.go
 ```
+
+To set up a Raspberry Pi to run this, see [raspberry-pi-setup.md](raspberry-pi-setup.md).
 
 ## Contributing
 
