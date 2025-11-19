@@ -13,7 +13,7 @@ type Display interface {
 }
 
 // Run starts the clock loop
-func Run(display Display) {
+func Run(display Display, mode string) {
 	for {
 		err := showTime(display)
 		if err != nil {

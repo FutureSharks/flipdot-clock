@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/FutureSharks/flipdot-clock/flipdot"
+	"github.com/FutureSharks/flipdot-clock/flipdot/clock"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -16,8 +17,7 @@ func main() {
 	baudRate := flag.Int("serial-baud", 57600, "The baud rate for the serial connection.")
 	terminalMode := flag.Bool("terminal", false, "Display output to terminal instead of serial port.")
 	testPattern := flag.Bool("test-pattern", false, "Display a test pattern and then exit")
-	clock := flag.Bool("clock", false, "Run the clock")
-	clock := flag.Bool("clock", false, "Run the clock"
+	clockMode := flag.String("clock-mode", "", "The mode to run the clock in. Must be one of 'default' or 'TBD'")
 	text := flag.String("text", "", "Display some text")
 	textLoop := flag.Bool("text-loop", false, "Loop text continuously")
 	textSize := flag.String("text-size", "large", "Size of each character. Value must be one of 'large' or 'small'")
@@ -63,14 +63,8 @@ func main() {
 		if err != nil {
 			log.Fatalf("Failed to show text: %v", err)
 		}
-	} else if *clock {
-		for {
-			err = display.ShowTime()
-			if err != nil {
-				log.Fatalf("Failed to show time: %v", err)
-			}
-			time.Sleep(1 * time.Minute)
-		}
+	} else if *clockMode != "" {
+		clock.Run(display, *clockMode)
 	} else {
 		log.Infoln("No mode selected. Use '-clock' or '-text' arguments. Exiting.")
 	}
