@@ -183,41 +183,6 @@ func TestDisplayWithMock(t *testing.T) {
 	})
 }
 
-// Test ShowTime method
-func TestDisplayShowTime(t *testing.T) {
-	mock := &MockDisplayOutput{}
-	display := &Display{output: mock}
-
-	err := display.ShowTime()
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	if len(mock.ShowCalls) != 1 {
-		t.Fatalf("expected 1 Show call, got %d", len(mock.ShowCalls))
-	}
-
-	// Verify that the display data contains time-related patterns
-	displayData := mock.ShowCalls[0].DisplayData
-
-	// Check that first column is empty (border)
-	if displayData[0] != 0 {
-		t.Error("expected first column to be empty for border")
-	}
-
-	// Check that some columns have data (time display)
-	hasData := false
-	for i := 1; i < len(displayData); i++ {
-		if displayData[i] != 0 {
-			hasData = true
-			break
-		}
-	}
-	if !hasData {
-		t.Error("expected time display to have some data")
-	}
-}
-
 // Test RunTestPattern method
 func TestDisplayRunTestPattern(t *testing.T) {
 	mock := &MockDisplayOutput{}

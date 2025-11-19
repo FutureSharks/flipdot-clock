@@ -17,6 +17,7 @@ func main() {
 	terminalMode := flag.Bool("terminal", false, "Display output to terminal instead of serial port.")
 	testPattern := flag.Bool("test-pattern", false, "Display a test pattern and then exit")
 	clock := flag.Bool("clock", false, "Run the clock")
+	clock := flag.Bool("clock", false, "Run the clock"
 	text := flag.String("text", "", "Display some text")
 	textLoop := flag.Bool("text-loop", false, "Loop text continuously")
 	textSize := flag.String("text-size", "large", "Size of each character. Value must be one of 'large' or 'small'")
