@@ -22,6 +22,7 @@ func main() {
 	textSize := flag.String("text-size", "large", "Size of each character. Value must be one of 'large' or 'small'")
 	scrollSpeed := flag.Int("text-scroll-speed", 5, "Text scroll speed. 1 is slow, 9 is fast")
 	debugLogging := flag.Bool("debug", false, "Enable debug logging")
+	flipDisplay := flag.Bool("flip-display", false, "Rotate the display 180 degrees")
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "flipdot-clock: a small tool for displaying text or the time on a Alfa-Zeta XY5 14*28 flipdot display\n\n")
@@ -43,7 +44,7 @@ func main() {
 	}
 
 	// Create a new display instance
-	display, err := flipdot.NewDisplay(*terminalMode, *portName, *baudRate)
+	display, err := flipdot.NewDisplay(*terminalMode, *portName, *baudRate, *flipDisplay)
 
 	if err != nil {
 		log.Fatalf("Failed to create display: %v", err)

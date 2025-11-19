@@ -21,17 +21,18 @@ type DisplayOutput interface {
 // it could be a physical Alfa-Zeta 14*28 display connected via serial port or a simulated display that runs in the terminal
 type Display struct {
 	output DisplayOutput
+	flip   bool
 }
 
-func NewDisplay(terminalMode bool, portName string, baudRate int) (*Display, error) {
+func NewDisplay(terminalMode bool, portName string, baudRate int, flip bool) (*Display, error) {
 	if terminalMode {
-		return &Display{output: &TerminalOutput{}}, nil
+		return &Display{output: &TerminalOutput{}, flip: flip}, nil
 	}
-	return newSerialDisplay(portName, baudRate)
+	return newSerialDisplay(portName, baudRate, flip)
 }
 
 // NewSerialDisplay creates a new Display instance with serial output
-func newSerialDisplay(portName string, baudRate int) (*Display, error) {
+func newSerialDisplay(portName string, baudRate int, flip bool) (*Display, error) {
 	mode := &serial.Mode{
 		BaudRate: baudRate,
 	}
@@ -42,7 +43,7 @@ func newSerialDisplay(portName string, baudRate int) (*Display, error) {
 	}
 
 	output := &SerialOutput{port: port}
-	return &Display{output: output}, nil
+	return &Display{output: output, flip: flip}, nil
 }
 
 // Close closes the display connection
@@ -112,6 +113,24 @@ func (d *Display) ShowTime() error {
 }
 
 func (d *Display) Show(displayData [28]uint16) error {
+	if d.flip {
+		// Rotate 180 degrees
+		// 1. Reverse columns
+		// 2. Reverse bits in each column (14 bits)
+		rotatedData := [28]uint16{}
+		for i := 0; i < 28; i++ {
+			col := displayData[27-i]
+			// Reverse 14 bits
+			var revCol uint16
+			for j := 0; j < 14; j++ {
+				if (col>>j)&1 == 1 {
+					revCol |= 1 << (13 - j)
+				}
+			}
+			rotatedData[i] = revCol
+		}
+		return d.output.Show(rotatedData)
+	}
 	return d.output.Show(displayData)
 }
 

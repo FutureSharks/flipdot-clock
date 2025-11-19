@@ -133,7 +133,7 @@ func TestPrepareSerialFrames(t *testing.T) {
 // Test Display creation
 func TestNewDisplay(t *testing.T) {
 	t.Run("terminal mode", func(t *testing.T) {
-		display, err := NewDisplay(true, "", 0)
+		display, err := NewDisplay(true, "", 0, false)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
