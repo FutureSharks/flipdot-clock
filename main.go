@@ -17,7 +17,7 @@ func main() {
 	baudRate := flag.Int("serial-baud", 57600, "The baud rate for the serial connection.")
 	terminalMode := flag.Bool("terminal", false, "Display output to terminal instead of serial port.")
 	testPattern := flag.Bool("test-pattern", false, "Display a test pattern and then exit")
-	clockMode := flag.String("clock-mode", "", "The mode to run the clock in. Must be one of 'default' or 'TBD'")
+	clockMode := flag.String("clock-mode", "", "The mode to run the clock in. Must be one of 'default' or 'transition'")
 	text := flag.String("text", "", "Display some text")
 	textLoop := flag.Bool("text-loop", false, "Loop text continuously")
 	textSize := flag.String("text-size", "large", "Size of each character. Value must be one of 'large' or 'small'")
@@ -44,6 +44,10 @@ func main() {
 		log.SetLevel(log.DebugLevel)
 	}
 
+	if *clockMode != "" && *text != "" {
+		log.Fatalf("Cannot specify both clock-mode and text")
+	}
+
 	// Create a new display instance
 	display, err := flipdot.NewDisplay(*terminalMode, *portName, *baudRate, *flipDisplay)
 
@@ -66,6 +70,6 @@ func main() {
 	} else if *clockMode != "" {
 		clock.Run(display, *clockMode)
 	} else {
-		log.Infoln("No mode selected. Use '-clock' or '-text' arguments. Exiting.")
+		log.Infoln("No mode selected. Use '-clock-mode' or '-text' arguments. Exiting.")
 	}
 }

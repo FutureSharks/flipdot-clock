@@ -27,3 +27,14 @@ Add cron configuration:
 ```bash
 echo "* * * * * root pgrep flipdot-clock > /dev/null || /root/go/bin/flipdot-clock" > /etc/cron.d/flipdot-clock
 ```
+
+Disable some services that we don't need:
+
+```bash
+systemctl disable bluetooth.service
+systemctl disable triggerhappy.service
+systemctl disable dbus.service
+systemctl disable avahi-daemon.service
+systemctl disable ModemManager.service
+systemctl disable polkit.service
+```
