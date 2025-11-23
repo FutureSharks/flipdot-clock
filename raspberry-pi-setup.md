@@ -25,7 +25,7 @@ go install github.com/FutureSharks/flipdot-clock@latest
 Add cron configuration:
 
 ```bash
-echo "* * * * * root pgrep flipdot-clock > /dev/null || /root/go/bin/flipdot-clock" > /etc/cron.d/flipdot-clock
+echo "* * * * * root pgrep flipdot-clock > /dev/null || /root/go/bin/flipdot-clock -clock -clock-size 2 -clock-mode transition &" > /etc/cron.d/flipdot-clock
 ```
 
 Disable some services that we don't need:

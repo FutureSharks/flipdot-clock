@@ -2,33 +2,32 @@ package clock
 
 import (
 	"math/rand"
+	"strings"
 	"time"
 
 	fonts "github.com/FutureSharks/flipdot-clock/flipdot/fonts"
 	log "github.com/sirupsen/logrus"
 )
 
-// Display interface for the clock to interact with the hardware
 type Display interface {
 	Show(displayData [28]uint16) error
 }
 
-// Run starts the clock loop
-func Run(display Display, mode string) {
+func Run(display Display, mode string, size string) {
 	if mode == "transition" {
-		runTransitionMode(display)
+		runTransitionMode(display, size)
 		return
 	}
 	if mode == "default" {
-		runDefaultMode(display)
+		runDefaultMode(display, size)
 		return
 	}
 	log.Fatalf("Invalid clock-mode value %s. Must be 'default' or 'transition'", mode)
 }
 
-func runDefaultMode(display Display) {
+func runDefaultMode(display Display, size string) {
 	for {
-		err := showTime(display)
+		err := showCurrentTime(display, size)
 		if err != nil {
 			log.Errorf("Failed to show time: %v", err)
 			return
@@ -37,50 +36,61 @@ func runDefaultMode(display Display) {
 	}
 }
 
-func showTime(display Display) error {
-	now := time.Now()
-	return showTimeFor(display, now)
-}
-
-func showTimeFor(display Display, t time.Time) error {
-	timeStr := t.Format("15:04")
-	displayData, err := renderTime(timeStr)
+func showCurrentTime(display Display, size string) error {
+	displayData, err := renderTime(time.Now(), size)
 	if err != nil {
 		return err
 	}
 
-	log.Debugf("Displaying time: %s", timeStr)
 	return display.Show(displayData)
 }
 
-func renderTime(timeStr string) ([28]uint16, error) {
+func renderTime(t time.Time, size string) ([28]uint16, error) {
+	timeStr := t.Format("15:04")
 	displayData := [28]uint16{}
 	result := []uint16{}
-	for _, char := range timeStr {
-		fontData, err := fonts.GetCharacter(char, "small")
+
+	// some size specific fixes
+	// remove the colon so the larger size can fit on the display
+	if size == "2" {
+		timeStr = strings.Replace(timeStr, ":", "", 1)
+	}
+	// add left display border
+	if size == "1" {
+		displayData[0] = 0
+	}
+
+	for i, char := range timeStr {
+		fontData, err := fonts.GetCharacter(char, size)
 		if err != nil {
 			return displayData, err
 		}
-		// add the character
+
+		if size == "2" && i == 2 {
+			// add an extra 1 column gap between the hours and minutes
+			result = append(result, uint16(0))
+		}
+
+		// add the character to the results
 		result = append(result, fontData...)
-		// add a small gap before next character
+		// add a 1 column gap before next character
 		result = append(result, uint16(0))
 	}
 
-	// add left display border
-	displayData[0] = 0
-
 	for i, v := range result {
-		if i+1 < len(displayData) {
-			displayData[i+1] = v
+		if i < len(displayData) {
+			if size == "1" && i == 0 {
+				continue
+			}
+			displayData[i] = v
 		}
 	}
+
 	return displayData, nil
 }
 
-func runTransitionMode(display Display) {
-	// Initial display
-	err := showTime(display)
+func runTransitionMode(display Display, size string) {
+	err := showCurrentTime(display, size)
 	if err != nil {
 		log.Errorf("Failed to show initial time: %v", err)
 	}
@@ -89,24 +99,19 @@ func runTransitionMode(display Display) {
 		now := time.Now()
 		nextMinute := now.Truncate(time.Minute).Add(time.Minute)
 
-		// Wait for next minute
 		timeToWait := nextMinute.Sub(now)
 		time.Sleep(timeToWait)
 
 		newTime := time.Now()
-		newTimeStr := newTime.Format("15:04")
-
 		prevTime := newTime.Add(-1 * time.Minute)
-		prevTimeStr := prevTime.Format("15:04")
 
-		prevData, _ := renderTime(prevTimeStr)
-		newData, _ := renderTime(newTimeStr)
+		prevData, _ := renderTime(prevTime, size)
+		newData, _ := renderTime(newTime, size)
 
-		// Calculate diffs
 		type pixel struct {
 			col int
 			row int
-			val bool // true if bit is set (1), false if 0
+			val bool
 		}
 
 		var diffs []pixel
@@ -126,7 +131,9 @@ func runTransitionMode(display Display) {
 			}
 		}
 
-		// Shuffle diffs
+		log.Infof("Found %d diffs", len(diffs))
+
+		// Shuffle diffs create a curious transition effect
 		rand.Shuffle(len(diffs), func(i, j int) {
 			diffs[i], diffs[j] = diffs[j], diffs[i]
 		})
@@ -142,10 +149,21 @@ func runTransitionMode(display Display) {
 			}
 
 			display.Show(currentData)
-			time.Sleep(1 * time.Second)
+			time.Sleep(calculateTransitionPixelInterval(len(diffs)))
 		}
 
 		// Ensure we end up with the exact new data (in case of any drift or logic error)
 		display.Show(newData)
 	}
+}
+
+func calculateTransitionPixelInterval(diffCount int) time.Duration {
+	// get it done in 8 seconds
+	transitionTimeLimit := 8 * time.Second
+
+	if diffCount == 0 {
+		return 0
+	}
+
+	return transitionTimeLimit / time.Duration(diffCount)
 }

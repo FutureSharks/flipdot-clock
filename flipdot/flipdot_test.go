@@ -213,7 +213,7 @@ func TestDisplayShowText(t *testing.T) {
 
 	t.Run("simple text no loop", func(t *testing.T) {
 		mock.ShowCalls = nil // Reset
-		err := display.ShowText("Hi", 1*time.Millisecond, false, "small")
+		err := display.ShowText("Hi", 1*time.Millisecond, false, "1")
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -232,7 +232,7 @@ func TestDisplayShowText(t *testing.T) {
 	})
 
 	t.Run("unsupported character", func(t *testing.T) {
-		err := display.ShowText("🚀", 1*time.Millisecond, false, "small")
+		err := display.ShowText("🚀", 1*time.Millisecond, false, "1")
 		if err == nil {
 			t.Fatal("expected error for unsupported character")
 		}
@@ -244,7 +244,7 @@ func TestDisplayPrepareText(t *testing.T) {
 	display := &Display{output: &MockDisplayOutput{}}
 
 	t.Run("valid text small", func(t *testing.T) {
-		result, err := display.prepareText("Hi", "small")
+		result, err := display.prepareText("Hi", "1")
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -262,7 +262,7 @@ func TestDisplayPrepareText(t *testing.T) {
 	})
 
 	t.Run("valid text large", func(t *testing.T) {
-		result, err := display.prepareText("A", "large")
+		result, err := display.prepareText("A", "3")
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}

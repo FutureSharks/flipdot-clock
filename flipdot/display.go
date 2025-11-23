@@ -5,7 +5,7 @@ import (
 	"math"
 	"time"
 
-	fonts "github.com/FutureSharks/flipdot-clock/flipdot/fonts"
+	"github.com/FutureSharks/flipdot-clock/flipdot/fonts"
 
 	log "github.com/sirupsen/logrus"
 	"go.bug.st/serial"
