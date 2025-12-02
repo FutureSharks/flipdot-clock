@@ -15,15 +15,18 @@ A small application for displaying text or the time on an [Alfa-Zeta XY5 14*28 F
 ## Command Line Options
 
 - `-clock` - Run the clock
+- `-clock-mode string` - The mode to run the clock in. Must be one of 'default' or 'transition' (default "default")
+- `-clock-size string` - Size of the clock font. Must be one of '1' (small) or '2' (medium) (default "1")
 - `-debug` - Enable debug logging
-- `-serial-baud`- The baud rate for the serial connection. (default 57600)
-- `-serial-port` - The serial port connected to the displays (default "/dev/ttyS0")
+- `-flip-display` - Rotate the display 180 degrees
+- `-serial-baud int` - The baud rate for the serial connection. (default 57600)
+- `-serial-port string` - The serial port connected to the displays (default "/dev/ttyS0")
 - `-terminal` - Display output to terminal instead of serial port.
 - `-test-pattern` - Display a test pattern and then exit
-- `-text` - Display some text
+- `-text string` - Display some text
 - `-text-loop` - Loop text continuously
-- `-text-scroll-speed` - Text scroll speed. 1 is slow, 9 is fast (default 5)
-- `-text-size` - Size of each character. Value must be one of 'large' or 'small'
+- `-text-scroll-speed int` - Text scroll speed. 1 is slow, 9 is fast (default 5)
+- `-text-size string` - Size of each character. Value must be one of '1' (small), '2' (medium) or '3' (large) (default "3")
 
 ## Enclosure
 

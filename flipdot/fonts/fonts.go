@@ -15,12 +15,14 @@ func GetCharacter(char rune, size string) ([]uint16, error) {
 		return charData, nil
 	}
 
-	if size == "3" {
-		// Until I write all the lower letters in this bigger font
+	// Until I write all the lower letters in this bigger font
+	if size == "2" || size == "3" {
 		if unicode.IsLower(char) && unicode.IsLetter(char) {
 			char = unicode.ToUpper(char)
 		}
+	}
 
+	if size == "3" {
 		charData, ok := characters14x9[char]
 		if !ok {
 			return nil, fmt.Errorf("character '%c' in size '3' not found", char)

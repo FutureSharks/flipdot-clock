@@ -29,9 +29,9 @@ func TestShowTime(t *testing.T) {
 	// Verify that the display data contains time-related patterns
 	displayData := mock.ShowCalls[0]
 
-	// Check that first column has data (no border)
-	if displayData[0] == 0 {
-		t.Error("expected first column to have data (no border)")
+	// Check that first column is empty (border)
+	if displayData[0] != 0 {
+		t.Error("expected first column to be empty (border)")
 	}
 
 	// Check that some columns have data (time display)
