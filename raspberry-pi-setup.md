@@ -1,8 +1,46 @@
 # How to set up a Raspberry Pi
 
-First you need to SSH to your Raspberry Pi.
+To make a very lean Raspberry Pi host, install the lite version of Rasbian and then SSH to your Raspberry Pi.
 
-Install go:
+## Preparation (done as root user)
+
+Remove some unnessary packages:
+
+```bash
+apt remove --purge bluez
+apt autoremove --purge
+```
+
+Update the OS:
+
+```bash
+apt update
+apt upgrade
+apt install vim
+```
+
+Update the firmware:
+
+```bash
+rpi-update
+```
+
+Reboot.
+
+## Set up shell etc
+
+```bash
+sed -i 's/%sudo     ALL=(ALL:ALL) ALL/%sudo ALL=(ALL:ALL) NOPASSWD:ALL/g' /etc/sudoers
+sed -i 's/%sudo\tALL=(ALL:ALL) ALL/%sudo ALL=(ALL:ALL) NOPASSWD:ALL/g' /etc/sudoers
+echo 'alias ll="ls -l"' >> /etc/bash.bashrc
+echo 'alias grep="grep --color=auto"' >> /etc/bash.bashrc
+echo 'export HISTSIZE=99999' >> /etc/bash.bashrc
+echo 'export HISTFILESIZE=9999999' >> /etc/bash.bashrc
+echo "PS1='\[\033[00;32m\]\u\[\033[00;37m\]@\[\033[00;34m\]\h\[\033[00m\]:\[\033[00;35m\]\w\[\033[00m\]\$ '" >> /etc/bash.bashrc
+touch /etc/cloud/cloud-init.disabled
+```
+
+## Install go
 
 ```bash
 wget https://go.dev/dl/go1.23.12.linux-armv6l.tar.gz
@@ -16,26 +54,17 @@ PATH=$PATH:/usr/local/go/bin:/root/go/bin
 GOPATH=$HOME/golang
 ```
 
+## Installation
+
 Install the flipdot-clock binary:
 
 ```bash
 go install github.com/FutureSharks/flipdot-clock@latest
 ```
 
-Add cron configuration:
+Add service configuration:
 
 ```bash
-echo "* * * * * root pgrep flipdot-clock > /dev/null || /root/go/bin/flipdot-clock -clock -flip-display -clock-size 2 -clock-mode transition &" > /etc/cron.d/flipdot-clock-start
-echo "* * * * * root pgrep flipdot-clock -c | egrep -q '0|1' || killall flipdot-clock" > /etc/cron.d/flipdot-clock-check
-```
-
-Disable some services that we don't need:
-
-```bash
-systemctl disable bluetooth.service
-systemctl disable triggerhappy.service
-systemctl disable dbus.service
-systemctl disable avahi-daemon.service
-systemctl disable ModemManager.service
-systemctl disable polkit.service
+echo -e "[Unit]\nDescription=Flipdot Clock Service\nAfter=network.target\n\n[Service]\nExecStart=/root/go/bin/flipdot-clock -clock -flip-display -clock-size 2 -clock-mode transition\nRestart=always\nRestartSec=5\nUser=root\n\n[Install]\nWantedBy=multi-user.target" > /etc/systemd/system/flipdot-clock.service
+systemctl daemon-reload && systemctl start flipdot-clock && systemctl enable flipdot-clock
 ```
